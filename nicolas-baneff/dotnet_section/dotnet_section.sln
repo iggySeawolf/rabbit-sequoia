@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnet_section", "dotnet_section.csproj", "{F9222B37-51A2-408E-B7A0-B0506441C852}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitService", "..\RabbitService\RabbitService.csproj", "{7A4CD765-6976-4462-A3A8-FE9A619DC75E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F9222B37-51A2-408E-B7A0-B0506441C852}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9222B37-51A2-408E-B7A0-B0506441C852}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9222B37-51A2-408E-B7A0-B0506441C852}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A4CD765-6976-4462-A3A8-FE9A619DC75E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A4CD765-6976-4462-A3A8-FE9A619DC75E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A4CD765-6976-4462-A3A8-FE9A619DC75E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A4CD765-6976-4462-A3A8-FE9A619DC75E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
