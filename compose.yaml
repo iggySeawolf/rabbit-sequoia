@@ -17,6 +17,7 @@
           dockerfile: ./rabbit-mq/Dockerfile
         ports:
           - "15671:15672"
+          - "5672:5672" # for exposing rabbitmq
     
       dotnet-app:
         build:

@@ -1,6 +1,12 @@
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
 var app = builder.Build();
 
-app.MapGet("/", () => "Igat Hello World!");
+//app.MapGet("/", () => "Igat Hello World!");
+
+//app.UseStaticFiles();
+app.UseRouting();
+app.MapControllers();
 
 app.Run();
