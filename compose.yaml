@@ -10,6 +10,13 @@
 
 
     services:
+
+      rabbit-sequoia-management:
+        build:
+          context: .
+          dockerfile: ./rabbit-mq/Dockerfile
+        ports:
+          - "15671:15672"
     
       dotnet-app:
         build:
@@ -22,9 +29,10 @@
       spring-boot-app:
         build:
           context: .
-          dockerfile: Dockerfile.spring
+          dockerfile: ./rabbit-sequoia-spring/Dockerfile
         ports:
-          - "8080:8081"
+          - "9000:8081"
+
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
