@@ -23,7 +23,7 @@ namespace dotnet_section.Controllers
         [Route("/")]
         public async Task<ActionResult> Index()
         {
-
+            _rabbitService.Receive();
             return new JsonResult(new
             {
                 igat = "matthew"
