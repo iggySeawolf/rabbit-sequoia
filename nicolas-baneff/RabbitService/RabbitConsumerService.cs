@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -19,11 +20,12 @@ namespace RabbitServices
         private IConnection _connection;
         private IChannel _channel;
 
-        public RabbitConsumerService(IJobPostService jps)
+        public RabbitConsumerService(IJobPostService jps, IConfiguration configuration)
         {
             // Dependency injection first
             _jobPostService = jps;
-            _factory = new ConnectionFactory { HostName = "rabbit-sequoia-management" };
+            var hostNameRabbit = configuration["RabbitMQ:HostName"];
+            _factory = new ConnectionFactory { HostName = hostNameRabbit };
 
             //_factory = new ConnectionFactory { HostName = "localhost" };
 

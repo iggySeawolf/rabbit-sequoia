@@ -3,6 +3,8 @@
 # Create a stage for building the application.
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 
+ENV ASPNETCORE_ENVIRONMENT Production
+
 COPY ./nicolas-baneff/dotnet_section/. /source/dotnet_section
 COPY ./nicolas-baneff/RabbitService/. /source/RabbitService
 
