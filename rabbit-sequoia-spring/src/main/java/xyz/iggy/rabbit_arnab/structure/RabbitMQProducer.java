@@ -43,10 +43,10 @@ public class RabbitMQProducer {
     @Scheduled(cron="*/2 * * * * *")
     public void scheduledMsg() throws JsonProcessingException {
         JobPostingEntity jobPostingEntity = JobPostingEntity.builder()
-                .queryParameter(".NET")
+                .queryParameter(".KEITH NIC")
                 .skillsTags(List.of(".NET",
-                        "SQl",
-                        "Linux",
+                        "JAVA BETTER",
+                        "ASP NET SUCKS",
                         "React"))
                 .messagePublishedOn(LocalDateTime.now())
                 .build();
