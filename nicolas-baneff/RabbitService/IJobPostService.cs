@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RabbitServices.Models;
 
 namespace RabbitServices
 {
-    public interface IRabbitService
+    public interface IJobPostService
     {
-        public void Receive();
+        public IEnumerable<JobPost> GetAllJobsFromQueue();
+        public void insertJobPost(JobPost jp);
     }
 
 }

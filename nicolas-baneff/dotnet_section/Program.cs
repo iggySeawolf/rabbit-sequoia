@@ -3,7 +3,10 @@ using RabbitServices;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<IRabbitService, RabbitService>();
+
+builder.Services.AddSingleton<IJobPostService, JobPostService>();
+builder.Services.AddHostedService<RabbitConsumerService>();
+
 var app = builder.Build();
 
 //app.MapGet("/", () => "Igat Hello World!");

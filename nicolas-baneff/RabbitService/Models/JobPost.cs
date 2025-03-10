@@ -1,4 +1,4 @@
-﻿namespace dotnet_section.Models
+﻿namespace RabbitServices.Models
 {
     //{"queryParameter":".NET","skillsTags":[".NET","SQl","Linux","React"],"messagePublishedOn":"2025-03-09T19:22:48.000222572"}
     public class JobPost

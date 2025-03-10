@@ -12,23 +12,20 @@ namespace dotnet_section.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IRabbitService _rabbitService;
+        private readonly IJobPostService _rabbitService;
 
-        public HomeController(IRabbitService rabbitService)
+        public HomeController(IJobPostService rabbitService)
         {
             _rabbitService = rabbitService;
         }
-        
+
         // GET: HomeController
         [Route("/")]
         public async Task<ActionResult> Index()
         {
-            _rabbitService.Receive();
-            return new JsonResult(new
-            {
-                igat = "matthew"
-            });
-        }
 
+            return new JsonResult(_rabbitService.GetAllJobsFromQueue());
+
+        }
     }
 }
