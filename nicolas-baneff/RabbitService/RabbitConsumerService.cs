@@ -21,11 +21,11 @@ namespace RabbitServices
 
         public RabbitConsumerService(IJobPostService jps)
         {
-            //var factory = new ConnectionFactory { HostName = "rabbit-sequoia-management" };
             // Dependency injection first
             _jobPostService = jps;
+            _factory = new ConnectionFactory { HostName = "rabbit-sequoia-management" };
 
-            _factory = new ConnectionFactory { HostName = "localhost" };
+            //_factory = new ConnectionFactory { HostName = "localhost" };
 
         }
 

@@ -3,7 +3,8 @@
 # Create a stage for building the application.
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 
-COPY ./nicolas-baneff/dotnet_section/. /source
+COPY ./nicolas-baneff/dotnet_section/. /source/dotnet_section
+COPY ./nicolas-baneff/RabbitService/. /source/RabbitService
 
 WORKDIR /source
 
@@ -16,7 +17,7 @@ ARG TARGETARCH
 # If TARGETARCH is "amd64", replace it with "x64" - "x64" is .NET's canonical name for this and "amd64" doesn't
 #   work in .NET 6.0.
 RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
-    dotnet publish -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app
+    dotnet publish /source/dotnet_section/dotnet_section.csproj -a ${TARGETARCH/amd64/x64} --use-current-runtime --self-contained false -o /app
 
 # Create a new stage for running the application that contains the minimal
 # runtime dependencies for the application.
