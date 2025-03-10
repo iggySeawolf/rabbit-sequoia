@@ -506,7 +506,7 @@ hs_err_pid*
 replay_pid*
 
 /iggy
-/rabbit-sequoia-spring/target/
+/rabbit-sequoia-spring/target
 #/rabbit-sequoia-spring/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 #/rabbit-sequoia-spring/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
 #/rabbit-sequoia-spring/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
