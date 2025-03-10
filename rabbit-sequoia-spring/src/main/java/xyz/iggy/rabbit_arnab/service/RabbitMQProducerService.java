@@ -1,4 +1,4 @@
-package xyz.iggy.rabbit_arnab.structure;
+package xyz.iggy.rabbit_arnab.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,14 +8,14 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import xyz.iggy.rabbit_arnab.model.JobPost;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @Slf4j
-public class RabbitMQProducer {
+public class RabbitMQProducerService {
 
 
     /*
@@ -32,7 +32,7 @@ public class RabbitMQProducer {
     private String routingKey;
 
     private final RabbitTemplate rabbitTemplate;
-    public RabbitMQProducer(RabbitTemplate rabbitTemplate) {
+    public RabbitMQProducerService(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
@@ -42,7 +42,7 @@ public class RabbitMQProducer {
 
     @Scheduled(cron="*/2 * * * * *")
     public void scheduledMsg() throws JsonProcessingException {
-        JobPostingEntity jobPostingEntity = JobPostingEntity.builder()
+        JobPost jobPostingEntity = JobPost.builder()
                 .queryParameter(".KEITH NIC")
                 .skillsTags(List.of(".NET",
                         "JAVA BETTER",
