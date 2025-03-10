@@ -32,7 +32,6 @@ public class RabbitMQProducer {
     private String routingKey;
 
     private final RabbitTemplate rabbitTemplate;
-//    """"
     public RabbitMQProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
@@ -56,9 +55,6 @@ public class RabbitMQProducer {
         objectMapper.findAndRegisterModules();
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         String jsonString = objectMapper.writeValueAsString(jobPostingEntity);
-//        String msg = "SpringBoot created @ " + Instant.now();
-//        String msg = jobPostingEntity.toString();
-
         log.info("Sending msg to Rabbit, {}", jsonString);
         sendMessage(jsonString);
     }
