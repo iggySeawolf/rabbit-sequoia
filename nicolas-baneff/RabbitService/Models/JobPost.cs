@@ -5,6 +5,6 @@
     {
         public string? QueryParameter{ get; set; }
         public List<string>? SkillsTags { get; set; }
-        public DateTime? messagePublishedOn { get; }
+        public DateTime? messagePublishedOn { get; set; }
     }
 }
