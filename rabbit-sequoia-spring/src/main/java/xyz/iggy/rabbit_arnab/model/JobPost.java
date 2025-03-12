@@ -1,4 +1,4 @@
-package xyz.iggy.rabbit_arnab.structure;
+package xyz.iggy.rabbit_arnab.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -10,13 +10,9 @@ import java.util.List;
 
 @Data
 @Builder
-public class JobPostingEntity {
+public class JobPost {
     String queryParameter;
     List<String> skillsTags;
-
-
-    //metadata
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     LocalDateTime messagePublishedOn;
-
 }
