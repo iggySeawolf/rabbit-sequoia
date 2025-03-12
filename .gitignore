@@ -506,3 +506,4 @@ hs_err_pid*
 replay_pid*
 
 /rabbit-sequoia-spring/target/
+/rabbit-sequoia-spring/spring-boot-jobs.json
