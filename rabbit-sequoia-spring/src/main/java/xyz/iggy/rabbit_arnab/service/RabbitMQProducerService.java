@@ -40,7 +40,7 @@ public class RabbitMQProducerService {
         rabbitTemplate.convertAndSend(exchangeName, routingKey, msg);
     }
 
-    @Scheduled(cron="*/2 * * * * *")
+//    @Scheduled(cron="*/2 * * * * *")
     public void scheduledMsg() throws JsonProcessingException {
         JobPost jobPostingEntity = JobPost.builder()
                 .queryParameter(".KEITH NIC")
