@@ -1,3 +1,2 @@
-Java Spring app that parses website for skills tags.
-Publish those skill tags and send it to rabbitmq.
-Parse will be done with JSoup
+Spring Boot app that parses the [sequoia](https://jobs.sequoiacap.com/) website and publishes those skill tags to rabbitmq.
+Parsing is done with RestClient
