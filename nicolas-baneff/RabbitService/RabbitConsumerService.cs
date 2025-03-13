@@ -72,8 +72,6 @@ namespace RabbitServices
             };
 
             await _channel.BasicConsumeAsync(QUEUE_NAME, autoAck: true, consumer: consumer);
-
-            Debug.Print(" Press [enter] to exit.");
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)

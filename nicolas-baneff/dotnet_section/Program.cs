@@ -12,7 +12,10 @@ builder.Services.AddHostedService<RabbitConsumerService>();
 
 var app = builder.Build();
 
-//app.MapGet("/", () => "Igat Hello World!");
+if(!app.Environment.IsProduction())
+{
+    app.UseDeveloperExceptionPage();
+}
 
 //app.UseStaticFiles();
 app.UseRouting();
