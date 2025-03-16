@@ -42,13 +42,13 @@ public class RabbitMQProducerService implements CommandLineRunner {
         rabbitTemplate.convertAndSend(exchangeName, routingKey, msg);
     }
 
-    @Scheduled(cron="0 * * * * *")
+//    @Scheduled(cron="0 * * * * *")
     public void scheduledMsg() throws JsonProcessingException {
         /*
         * Idk why this deserializeJson is not grabbing all the JSON response correctly.
         * If I use apiConsumerService.deserializeJson(param), and save the response to
         * a file, then it will show all response correctly.
-        * Maybe it is a problem with String class? Maybe the reponse
+        * Maybe it is a problem with String class? Maybe the response
         * is too big or something.
         * idk, yolo
         *
@@ -70,9 +70,6 @@ public class RabbitMQProducerService implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        //cannot run scheduledMsg here. I think because this method is called too early, and rabbitmq server is not FULLY rdy when this spring app
-        //run method is called.
-        log.info("RabbitMQProducerService class running.");
-//        scheduledMsg();
     }
+
 }

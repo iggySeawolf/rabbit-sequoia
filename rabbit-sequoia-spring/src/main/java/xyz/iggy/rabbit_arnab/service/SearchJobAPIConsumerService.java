@@ -63,7 +63,9 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
         ArrayNode skillsJSON = objectMapper.createArrayNode();
         skillsJSON.add(queryParam);
         finalQuery.set("query",skillsJSON);
-        return finalQuery.toString();
+        String ret = finalQuery.toString();
+        log.info("queryParam requestbody :: {}",ret);
+        return ret;
     }
 
 
