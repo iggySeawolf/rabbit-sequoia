@@ -44,6 +44,16 @@ public class RabbitMQProducerService implements CommandLineRunner {
 
     @Scheduled(cron="0 * * * * *")
     public void scheduledMsg() throws JsonProcessingException {
+        /*
+        * Idk why this deserializeJson is not grabbing all the JSON response correctly.
+        * If I use apiConsumerService.deserializeJson(param), and save the response to
+        * a file, then it will show all response correctly.
+        * Maybe it is a problem with String class? Maybe the reponse
+        * is too big or something.
+        * idk, yolo
+        *
+        * */
+
         List<JobPost> jobPosts = new ArrayList<>();
         for (String param : queryParams) {
             List<JobPost> jobPostListByQueryParam = apiConsumerService.deserializeJson(param);
