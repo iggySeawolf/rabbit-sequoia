@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import xyz.iggy.rabbit_arnab.model.JobPost;
 
@@ -41,7 +42,7 @@ public class RabbitMQProducerService implements CommandLineRunner {
         rabbitTemplate.convertAndSend(exchangeName, routingKey, msg);
     }
 
-//    @Scheduled(cron="*/2 * * * * *")
+    @Scheduled(cron="0 * * * * *")
     public void scheduledMsg() throws JsonProcessingException {
         List<JobPost> jobPosts = new ArrayList<>();
         for (String param : queryParams) {
@@ -58,6 +59,10 @@ public class RabbitMQProducerService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        scheduledMsg();
+
+        //cannot run scheduledMsg here. I think because this method is called too early, and rabbitmq server is not FULLY rdy when this spring app
+        //run method is called.
+        log.info("RabbitMQProducerService class running.");
+//        scheduledMsg();
     }
 }
