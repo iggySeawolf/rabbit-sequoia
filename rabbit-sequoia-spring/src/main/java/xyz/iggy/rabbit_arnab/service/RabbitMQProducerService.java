@@ -48,7 +48,7 @@ public class RabbitMQProducerService {
                         "JAVA BETTER",
                         "ASP NET SUCKS",
                         "React"))
-                .messagePublishedOn(LocalDateTime.now())
+//                .messagePublishedOn(LocalDateTime.now())
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();

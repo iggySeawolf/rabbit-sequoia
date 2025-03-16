@@ -11,7 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import xyz.iggy.rabbit_arnab.model.JobPost;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -38,6 +42,7 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
 
     private final RestClient restClient;
     private final ObjectMapper objectMapper;
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
 
     public JsonNode doPost(String requestBody){
@@ -72,7 +77,8 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
                         .companyName(companyName.asText())
                         .title(title.asText())
                         .skillsTags(skillsPerJob)
-//                        .jobPostedWhen(jobPostedWhen)
+                        .jobPostedWhen(Date.from(Instant.parse(jobPostedWhen.asText())))
+                        .messagePublishedOn(Date.from(Instant.now()))
                         .build();
                 log.info("jobpost::{}",jobPost);
                 String jopPostAsString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jobPost);

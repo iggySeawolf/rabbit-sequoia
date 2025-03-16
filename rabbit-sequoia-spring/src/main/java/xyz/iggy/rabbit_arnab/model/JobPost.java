@@ -1,12 +1,15 @@
 package xyz.iggy.rabbit_arnab.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -25,8 +28,9 @@ public class JobPost {
     private String companyName;
     private String title;
     private List<String> skillsTags;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime jobPostedWhen;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime messagePublishedOn;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
+    private Date jobPostedWhen;
+//    @JsonSerialize(using = DateSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
+    private Date messagePublishedOn;
 }

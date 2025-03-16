@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
+import java.text.SimpleDateFormat;
+
 @Configuration
 public class Config {
     @Bean
@@ -16,5 +18,10 @@ public class Config {
     @Bean
     public ObjectMapper objectMapper(){
         return new ObjectMapper();
+    }
+
+    @Bean
+    public SimpleDateFormat simpleDateFormat(){
+        return new SimpleDateFormat("Z");
     }
 }
