@@ -3,6 +3,8 @@ package xyz.iggy.rabbit_arnab.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -11,9 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import xyz.iggy.rabbit_arnab.model.JobPost;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 public class SearchJobAPIConsumerService implements CommandLineRunner {
     private static final String API_URL = "https://jobs.sequoiacap.com/api-boards/search-jobs";
-    private static final String queryParam = """
+    private/* static final */String queryParam = """
             {
                 "meta": {
                      "size": 10
@@ -31,21 +31,43 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
                  "board": {
                      "id": "sequoia-capital",
                      "isParent": true
-                 },
-                 "query": {
-                     "skills": [
-                         "resume:Spring Boot"
-                     ]
                  }
             }
             """;
+    //Get
+//    private static final String JSON_FILE;
+    private final ObjectMapper objectMapper;
 
     private final RestClient restClient;
-    private final ObjectMapper objectMapper;
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+
+    String asdasd() throws JsonProcessingException {
+//        JsonNode jsonNode = objectMapper.readTree(queryParam);
+//        jsonNode.
+
+        //Feels illegal </3
+        return queryParam += """
+                    ,
+                     "query": {
+                         "skills": [
+                             "resume:Spring Boot"
+                         ]
+                     }
+                }
+                """;
+    }
 
 
-    public JsonNode doPost(String requestBody){
+    private String try2(String queryParam) throws JsonProcessingException {
+        JsonNode baseQuery = objectMapper.readTree(this.queryParam);
+        ObjectNode finalQuery = (ObjectNode) baseQuery;
+        ArrayNode skillsJSON = objectMapper.createArrayNode();
+        skillsJSON.add(queryParam);
+        finalQuery.set("query",skillsJSON);
+        return finalQuery.toString();
+    }
+
+
+    private JsonNode doPost(String requestBody){
         JsonNode response = restClient.post()
                 .uri(API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -56,8 +78,8 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
     }
 
 
-    public void deserializeJson() throws JsonProcessingException {
-        JsonNode apiResponse = doPost(queryParam);
+    public List<JobPost> deserializeJson(String queryParam) throws JsonProcessingException {
+        JsonNode apiResponse = doPost(try2(queryParam));
         List<JobPost> listSendToRabbit = new ArrayList<>();
 
         JsonNode jobsArray = apiResponse.path("jobs");
@@ -74,21 +96,22 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
                     }
                 }
                 JobPost jobPost = JobPost.builder()
+                        .queryParameter(queryParam)
                         .companyName(companyName.asText())
                         .title(title.asText())
                         .skillsTags(skillsPerJob)
                         .jobPostedWhen(Date.from(Instant.parse(jobPostedWhen.asText())))
                         .messagePublishedOn(Date.from(Instant.now()))
                         .build();
-                log.info("jobpost::{}",jobPost);
-                String jopPostAsString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jobPost);
-                log.info("jobpost__JSON::\n{}",jopPostAsString);
+
+                listSendToRabbit.add(jobPost);
             }
         }
+        return listSendToRabbit;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        deserializeJson();
+//        deserializeJson("resume:Spring Boot");
     }
 }
