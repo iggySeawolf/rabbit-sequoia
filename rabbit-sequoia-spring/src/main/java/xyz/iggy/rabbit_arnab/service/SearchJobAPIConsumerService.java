@@ -36,6 +36,8 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
             """;
 
     private final RestClient restClient;
+    private final ObjectMapper objectMapper;
+
 
     public String doPost(){
         String response = restClient.post()
@@ -47,10 +49,11 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
 //        log.info("search-jobs api response == \n{}", response);
         return response;
     }
-    
+
+
     public void deserializeJson() throws JsonProcessingException {
+
         String doPostPost = doPost();
-        ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(doPostPost);
         JsonNode jobsArray = rootNode.path("jobs");
         List<String> allSkills = new ArrayList<>();
