@@ -11,8 +11,22 @@ import java.util.List;
 @Data
 @Builder
 public class JobPost {
-    String queryParameter;
+    //Query: manually put it
+    //
+    //jobs.title
+    //
+    //jobs.companyName
+    //
+    //jobs.skills.label
+    //jobs.timestamp
+    String queryParameter; // From controller not the json response.
+    String companyName;
+    String title;
     List<String> skillsTags;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    LocalDateTime jobPostedWhen;
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     LocalDateTime messagePublishedOn;
 }
