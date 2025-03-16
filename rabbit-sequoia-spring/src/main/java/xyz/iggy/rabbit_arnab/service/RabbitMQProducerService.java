@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import xyz.iggy.rabbit_arnab.model.JobPost;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,15 +43,17 @@ public class RabbitMQProducerService implements CommandLineRunner {
 
 //    @Scheduled(cron="*/2 * * * * *")
     public void scheduledMsg() throws JsonProcessingException {
-        List<JobPost> jobPosts = null;
+        List<JobPost> jobPosts = new ArrayList<>();
         for (String param : queryParams) {
-            jobPosts = apiConsumerService.deserializeJson(param);
+            List<JobPost> jobPostListByQueryParam = apiConsumerService.deserializeJson(param);
+            jobPosts.addAll(jobPostListByQueryParam);
         }
         for(JobPost jp: jobPosts){
-
-            log.info("Sending msg to Rabbit, {}", objectMapper.writeValueAsString(jp));
+            String rabbitMessage = objectMapper.writeValueAsString(jp);
+            sendMessage(rabbitMessage);
+            log.info("Sending msg to Rabbit, {}", rabbitMessage);
         }
-//        sendMessage(jsonString);
+
     }
 
     @Override
