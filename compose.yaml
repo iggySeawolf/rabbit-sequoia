@@ -9,30 +9,54 @@
 # https://github.com/docker/awesome-compose
 
 
-    services:
+version: '3.8'
 
-      rabbit-sequoia-management:
-        build:
-          context: .
-          dockerfile: ./rabbit-mq/Dockerfile
-        ports:
-          - "15671:15672"
-          - "5672:5672" # for exposing rabbitmq
-    
-      dotnet-app:
-        build:
-          context: .
-          dockerfile: Dockerfile.dotnet
-          target: final
-        ports:
-          - "5000:8080"
+services:
 
-      spring-boot-app:
-        build:
-          context: .
-          dockerfile: ./rabbit-sequoia-spring/Dockerfile
-        ports:
-          - "9000:8081"
+  rabbit-sequoia-management:
+    build:
+      context: .
+      dockerfile: ./rabbit-mq/Dockerfile
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"  # Management UI: http://localhost:15672
+      - "5672:5672"  # RabbitMQ message broker
+    networks:
+      - app-network
+
+  dotnet-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dotnet
+      target: final
+    ports:
+      - "5000:8080"
+    networks:
+      - app-network
+    depends_on:
+      - rabbit-sequoia-management
+
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: ./rabbit-sequoia-spring/Dockerfile
+    depends_on:
+      - rabbit-sequoia-management
+    environment:
+      SPRING_RABBITMQ_HOST: rabbit-sequoia-management  # FIXED
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    ports:
+      - "9000:8081"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+
 
 
 # The commented out section below is an example of how to define a PostgreSQL
