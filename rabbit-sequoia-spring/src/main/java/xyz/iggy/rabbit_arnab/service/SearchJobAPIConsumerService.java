@@ -14,9 +14,10 @@ import org.springframework.web.client.RestClient;
 import xyz.iggy.rabbit_arnab.model.JobPost;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -88,12 +89,32 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
                 JsonNode companyName = job.path("companyName");
                 JsonNode title = job.path("title");
                 JsonNode skillTags = job.path("skills");
+                JsonNode prefSkillsTags = job.path("preferredSkills");
+                JsonNode reqSkillsTags = job.path("requiredSkills");
                 JsonNode jobPostedWhen = job.path("timeStamp");
-                List<String> skillsPerJob = new ArrayList<>();
+                Set<String> skillsPerJob = new HashSet<>();
                 if(skillTags.isArray()){
                     for(JsonNode skills: skillTags){
                         skillsPerJob.add(skills.path("label").asText());
                     }
+                }
+                if(prefSkillsTags.isArray()){
+                    Stream<JsonNode> stream = StreamSupport.stream(prefSkillsTags.spliterator(), true);
+                    skillsPerJob.addAll(stream
+                            .map(it -> it.path("label").asText()) // Extract "label" field
+                            .collect(Collectors.toList()));
+                }
+                else{
+                    log.error("error pref skills");
+                }
+                if(reqSkillsTags.isArray()){
+                    Stream<JsonNode> stream = StreamSupport.stream(reqSkillsTags.spliterator(), true);
+                    skillsPerJob.addAll(stream
+                            .map(it -> it.path("label").asText()) // Extract "label" field
+                            .collect(Collectors.toList()));
+                }
+                else{
+                    log.error("error req skills");
                 }
                 JobPost jobPost = JobPost.builder()
                         .queryParameter(queryParam)

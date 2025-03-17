@@ -11,6 +11,7 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -27,7 +28,7 @@ public class JobPost {
     private String queryParameter; // From controller not the json response.
     private String companyName;
     private String title;
-    private List<String> skillsTags;
+    private Set<String> skillsTags;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
     private Date jobPostedWhen;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
