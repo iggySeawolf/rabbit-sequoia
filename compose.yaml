@@ -23,6 +23,12 @@ services:
       - "5672:5672"  # RabbitMQ message broker
     networks:
       - app-network
+    healthcheck:
+        test: ["CMD", "rabbitmqctl", "status"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+
 
   dotnet-app:
     build:
@@ -34,7 +40,8 @@ services:
     networks:
       - app-network
     depends_on:
-      - rabbit-sequoia-management
+      rabbit-sequoia-management:
+        condition: service_healthy
 
   spring-boot-app:
     build:
