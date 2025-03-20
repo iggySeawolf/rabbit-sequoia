@@ -25,7 +25,8 @@ namespace RabbitServices
             // Dependency injection first
             _jobPostService = jps;
             var hostNameRabbit = configuration["RabbitMQ:HostName"];
-            _factory = new ConnectionFactory { HostName = hostNameRabbit };
+            int portRabbit = Convert.ToInt32(configuration["RabbitMQ:Port"]);
+            _factory = new ConnectionFactory { HostName = hostNameRabbit, Port=portRabbit };
 
             //_factory = new ConnectionFactory { HostName = "localhost" };
 

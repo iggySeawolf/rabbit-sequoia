@@ -3,22 +3,28 @@ package xyz.iggy.rabbit_arnab.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import xyz.iggy.rabbit_arnab.model.JobPost;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class SearchJobAPIConsumerService implements CommandLineRunner {
     private static final String API_URL = "https://jobs.sequoiacap.com/api-boards/search-jobs";
-    private static final String requestBody = """
+    private/* static final */String queryParam = """
             {
                 "meta": {
                      "size": 10
@@ -26,67 +32,107 @@ public class SearchJobAPIConsumerService implements CommandLineRunner {
                  "board": {
                      "id": "sequoia-capital",
                      "isParent": true
-                 },
-                 "query": {
-                     "skills": [
-                         "resume:Spring Boot"
-                     ]
                  }
             }
             """;
+    //Get
+//    private static final String JSON_FILE;
+    private final ObjectMapper objectMapper;
 
     private final RestClient restClient;
 
-    public String doPost(){
-        String response = restClient.post()
+    String asdasd() throws JsonProcessingException {
+//        JsonNode jsonNode = objectMapper.readTree(queryParam);
+//        jsonNode.
+
+        //Feels illegal </3
+        return queryParam += """
+                    ,
+                     "query": {
+                         "skills": [
+                             "resume:Spring Boot"
+                         ]
+                     }
+                }
+                """;
+    }
+
+
+    private String try2(String queryParam) throws JsonProcessingException {
+        JsonNode baseQuery = objectMapper.readTree(this.queryParam);
+        ObjectNode finalQuery = (ObjectNode) baseQuery;
+        ArrayNode skillsJSON = objectMapper.createArrayNode();
+        skillsJSON.add(queryParam);
+        finalQuery.set("query",skillsJSON);
+        return finalQuery.toString();
+    }
+
+
+    private JsonNode doPost(String requestBody){
+        JsonNode response = restClient.post()
                 .uri(API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(requestBody)
                 .retrieve()
-                .body(String.class);
-//        log.info("search-jobs api response == \n{}", response);
+                .body(JsonNode.class);
         return response;
     }
-    
-    public void deserializeJson() throws JsonProcessingException {
-        String doPostPost = doPost();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode rootNode = objectMapper.readTree(doPostPost);
-        JsonNode jobsArray = rootNode.path("jobs");
-        List<String> allSkills = new ArrayList<>();
-        if (jobsArray.isArray()) {
 
+
+    public List<JobPost> deserializeJson(String queryParam) throws JsonProcessingException {
+        JsonNode apiResponse = doPost(try2(queryParam));
+        List<JobPost> listSendToRabbit = new ArrayList<>();
+
+        JsonNode jobsArray = apiResponse.path("jobs");
+        if (jobsArray.isArray()) {
             for (JsonNode job : jobsArray) {
                 JsonNode companyName = job.path("companyName");
                 JsonNode title = job.path("title");
                 JsonNode skillTags = job.path("skills");
+                JsonNode prefSkillsTags = job.path("preferredSkills");
+                JsonNode reqSkillsTags = job.path("requiredSkills");
                 JsonNode jobPostedWhen = job.path("timeStamp");
-
-                List<String> skillsPerJob = new ArrayList<>();
+                Set<String> skillsPerJob = new HashSet<>();
                 if(skillTags.isArray()){
                     for(JsonNode skills: skillTags){
                         skillsPerJob.add(skills.path("label").asText());
                     }
                 }
+                if(prefSkillsTags.isArray()){
+                    Stream<JsonNode> stream = StreamSupport.stream(prefSkillsTags.spliterator(), true);
+                    skillsPerJob.addAll(stream
+                            .map(it -> it.path("label").asText()) // Extract "label" field
+                            .collect(Collectors.toList()));
+                }
+                else{
+                    log.error("error pref skills");
+                }
+                if(reqSkillsTags.isArray()){
+                    Stream<JsonNode> stream = StreamSupport.stream(reqSkillsTags.spliterator(), true);
+                    skillsPerJob.addAll(stream
+                            .map(it -> it.path("label").asText()) // Extract "label" field
+                            .collect(Collectors.toList()));
+                }
+                else{
+                    log.error("error req skills");
+                }
+                JobPost jobPost = JobPost.builder()
+                        .queryParameter(queryParam)
+                        .companyName(companyName.asText())
+                        .title(title.asText())
+                        .skillsTags(skillsPerJob)
+                        .jobPostedWhen(Date.from(Instant.parse(jobPostedWhen.asText())))
+                        .messagePublishedOn(Date.from(Instant.now()))
+                        .build();
 
-                System.out.println(companyName +" "+ title +" "+skillsPerJob+ " "+jobPostedWhen);
-
+                listSendToRabbit.add(jobPost);
             }
         }
+        return listSendToRabbit;
     }
 
     @Override
     public void run(String... args) throws Exception {
-//        try {
-//            Writer writer = new FileWriter("./rabbit-sequoia-spring/spring-boot-jobs.json");
-//            BufferedWriter bw = new BufferedWriter(writer);
-//            bw.write(doPost());
-//            bw.close();
-//            log.info("api response written to file");
-//        } catch (IOException e) {
-//            log.error("Could not write response to file.");
-//            throw new RuntimeException(e);
-//        }
-        deserializeJson();
+//        deserializeJson("resume:Spring Boot");
     }
 }
