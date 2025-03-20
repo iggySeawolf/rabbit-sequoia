@@ -12,5 +12,36 @@
         public DateTime? JobPostedWhen { get; set; }
 
         public DateTime? MessagePublishedOn { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is JobPost other)
+            {
+                return QueryParameter == other.QueryParameter &&
+                       CompanyName == other.CompanyName &&
+                       Title == other.Title &&
+                       JobPostedWhen == other.JobPostedWhen &&
+                       MessagePublishedOn == other.MessagePublishedOn;
+            }
+            return false;
+        }
+
+        public bool Equals(JobPost? other)
+        {
+            if (other == null)
+                return false;
+
+            return QueryParameter == other.QueryParameter &&
+                   CompanyName == other.CompanyName &&
+                   Title == other.Title &&
+                   JobPostedWhen == other.JobPostedWhen &&
+                   MessagePublishedOn == other.MessagePublishedOn;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(QueryParameter, CompanyName, Title, JobPostedWhen, MessagePublishedOn);
+        }
+
     }
 }

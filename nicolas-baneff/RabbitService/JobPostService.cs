@@ -11,7 +11,7 @@ namespace RabbitServices
     public class JobPostService : IJobPostService   
     {
         //private const int QUEUE_SIZE = 5;
-        private const int QUEUE_SIZE = 500000;
+        private const int QUEUE_SIZE = 50000;
 
         public ConcurrentQueue<JobPost> JobPosts { get; } = new ConcurrentQueue<JobPost>();
 
@@ -31,10 +31,14 @@ namespace RabbitServices
             {
                 // do some leetcode stuff, for each query parameter, return top 5 skills tags
                 // then clear the queue
-
-
+                ProcessJobPost();
                 JobPosts.Clear();
             }
+
+        }
+
+        public void ProcessJobPost()
+        {
 
         }
 

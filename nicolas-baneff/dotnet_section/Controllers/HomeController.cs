@@ -6,6 +6,7 @@ using System.Net;
 
 using System.Diagnostics;
 using RabbitServices;
+using dotnet_section.Services;
 
 
 namespace dotnet_section.Controllers
@@ -13,11 +14,11 @@ namespace dotnet_section.Controllers
     public class HomeController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IJobPostService _rabbitService;
+        private readonly IJobPostAggregator _jobAggregatorService;
 
-        public HomeController(IJobPostService rabbitService, IWebHostEnvironment webHostEnvironment)
+        public HomeController(IJobPostAggregator jobAggregatorService, IWebHostEnvironment webHostEnvironment)
         {
-            _rabbitService = rabbitService;
+            _jobAggregatorService = jobAggregatorService;
             _webHostEnvironment = webHostEnvironment;
 
             Debug.Print("HomeController.cs running on environment "+webHostEnvironment.EnvironmentName);
@@ -28,7 +29,8 @@ namespace dotnet_section.Controllers
         [Route("/")]
         public async Task<ActionResult> Index()
         {
-            return new JsonResult(_rabbitService.GetAllJobsFromQueue());
+            var abc=  _jobAggregatorService.RefreshJobPosts();
+            return new JsonResult(abc);
 
         }
     }
