@@ -12,7 +12,6 @@ namespace RabbitServices
     {
         public IEnumerable<JobPost> GetAllJobsFromQueue();
         public void insertJobPost(JobPost jp);
-        public void ProcessJobPost();
     }
 
 }

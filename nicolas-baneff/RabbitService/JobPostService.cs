@@ -30,16 +30,11 @@ namespace RabbitServices
             {
                 // do some leetcode stuff, for each query parameter, return top 5 skills tags
                 // then clear the queue
-                ProcessJobPost();
                 while (JobPosts.TryDequeue(out _)) { }
             }
 
         }
 
-        public void ProcessJobPost()
-        {
-
-        }
 
     }   
 }
