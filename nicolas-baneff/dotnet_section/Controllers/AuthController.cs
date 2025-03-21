@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -10,7 +11,7 @@ namespace dotnet_section.Controllers
 {
     public class AuthController : ControllerBase
     {
-        private readonly string _key = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)); // 32 bytes = 256 bits // Use a secure key
+        private readonly string _key = "7bWnX9lOJw+M8Q5ZdF1P7G+2XjYqzXh5lFfA0J9F0Qo="; // 32 bytes = 256 bits // Use a secure key
 
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
@@ -40,13 +41,16 @@ namespace dotnet_section.Controllers
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var username = jwtToken.Claims.First(x => x.Type == ClaimTypes.Name).Value;
 
-                return Ok(new { username });
+                return Ok("aman");
             }
-            catch
+            catch (SecurityTokenExpiredException scte)
             {
-                return Unauthorized();
+                return Unauthorized("Token expired"); // Return a specific message
+            }
+            catch (Exception e) // Catch other validation errors
+            {
+                return Unauthorized(e); // General unauthorized for other errors
             }
         }
 
@@ -62,7 +66,7 @@ namespace dotnet_section.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddSeconds(4),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256)
             };
 
