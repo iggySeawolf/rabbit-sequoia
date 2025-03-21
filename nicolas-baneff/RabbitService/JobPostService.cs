@@ -20,6 +20,7 @@ namespace RabbitServices
 
         public IEnumerable<JobPost> GetAllJobsFromQueue()
         {
+
             return JobPosts.ToList();
         }
         public void insertJobPost(JobPost jp)
