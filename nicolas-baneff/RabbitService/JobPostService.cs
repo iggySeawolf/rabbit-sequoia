@@ -10,8 +10,7 @@ namespace RabbitServices
 {
     public class JobPostService : IJobPostService   
     {
-        //private const int QUEUE_SIZE = 5;
-        private const int QUEUE_SIZE = 50000;
+        private const int QUEUE_SIZE = 10;
 
         public ConcurrentQueue<JobPost> JobPosts { get; } = new ConcurrentQueue<JobPost>();
 
