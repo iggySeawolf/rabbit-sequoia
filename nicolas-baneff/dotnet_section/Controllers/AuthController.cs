@@ -11,7 +11,14 @@ namespace dotnet_section.Controllers
 {
     public class AuthController : ControllerBase
     {
-        private readonly string _key = "7bWnX9lOJw+M8Q5ZdF1P7G+2XjYqzXh5lFfA0J9F0Qo="; // 32 bytes = 256 bits // Use a secure key
+        private readonly string _key; // 32 bytes = 256 bits // Use a secure key
+
+
+        public AuthController(IConfiguration config)
+        {
+            // Generate a random 256-bit key (32 bytes)
+            _key = config["Jwt:Key"];
+        }
 
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
@@ -37,7 +44,8 @@ namespace dotnet_section.Controllers
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+                    ClockSkew = TimeSpan.Zero // without this expiry =expirytime + 5 minutes (by default), I dont want that so setting it to 0.
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
@@ -46,7 +54,7 @@ namespace dotnet_section.Controllers
             }
             catch (SecurityTokenExpiredException scte)
             {
-                return Unauthorized("Token expired"); // Return a specific message
+                return Unauthorized("Token expired " + scte.Expires.ToUniversalTime()); // Return a specific message
             }
             catch (Exception e) // Catch other validation errors
             {
@@ -61,12 +69,12 @@ namespace dotnet_section.Controllers
             {
             new Claim(ClaimTypes.Name, username),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+            };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddSeconds(4),
+                Expires = DateTime.UtcNow.AddSeconds(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256)
             };
 

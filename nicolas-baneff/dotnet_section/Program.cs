@@ -24,7 +24,7 @@ builder.Services.AddHostedService<RabbitConsumerService>();
 
 
 // JWT Configuration
-var key = "your_secret_key_here"; // Replace with a strong key
+var key = builder.Configuration["Jwt:Key"]; // Replace with a strong key
 var keyBytes = Encoding.UTF8.GetBytes(key);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
