@@ -23,7 +23,7 @@ namespace dotnet_section.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            if (request.Username == "test" && request.Password == "password") // Replace with real authentication
+            if (request.Username == "test" && request.Password == "test") // Replace with real authentication
             {
                 var token = GenerateJwtToken(request.Username);
                 return Ok(new { token });
@@ -74,7 +74,7 @@ namespace dotnet_section.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddSeconds(10),
+                Expires = DateTime.UtcNow.AddMinutes(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256)
             };
 

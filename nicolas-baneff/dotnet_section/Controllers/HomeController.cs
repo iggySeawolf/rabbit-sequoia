@@ -7,6 +7,7 @@ using System.Net;
 using System.Diagnostics;
 using RabbitServices;
 using dotnet_section.Services;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace dotnet_section.Controllers
@@ -26,12 +27,36 @@ namespace dotnet_section.Controllers
         }
 
         // GET: HomeController
-        [Route("/")]
-        public async Task<ActionResult> Index()
+        [Route("")]
+        public async Task<ActionResult> Index() //Views/Home/Index.cshtml
         {
-            var abc=  _jobAggregatorService.RefreshJobPosts();
+            return View();
+
+        }
+        [Route("/secure")]
+        [Authorize]
+        public async Task<ActionResult> Secure()
+        {
+            return Ok("<h1>Bisain</h1>");
+
+        }
+
+        [Route("/worksecure")]
+        [Authorize]
+        public async Task<ActionResult> WorkSecure()
+        {
+            var abc = _jobAggregatorService.RefreshJobPosts();
             return new JsonResult(abc);
 
         }
+        [Route("/work")]
+        [Authorize]
+        public async Task<ActionResult> Work()
+        {
+            var abc = _jobAggregatorService.RefreshJobPosts();
+            return new JsonResult(abc);
+
+        }
+
     }
 }
