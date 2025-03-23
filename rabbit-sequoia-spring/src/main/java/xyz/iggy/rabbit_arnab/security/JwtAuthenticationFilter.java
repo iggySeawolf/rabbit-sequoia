@@ -2,6 +2,7 @@ package xyz.iggy.rabbit_arnab.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,11 +17,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Base64;
 import java.util.Collections;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final String secretKey = "7bWnX9lOJw+M8Q5ZdF1P7G+2XjYqzXh5lFfA0J9F0Qo="; // Replace with ASP.NET secret key
+    private final byte[] secretKey = Base64.getDecoder().decode("7bWnX9lOJw+M8Q5ZdF1P7G+2XjYqzXh5lFfA0J9F0Qo=");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -34,11 +36,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
         try {
-            Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+            String jwt = Jwts.builder()
+                    .setSubject("user123")
+                    .signWith(Keys.hmacShaKeyFor(secretKey), SignatureAlgorithm.HS256)
+//                    .signWith()
+                    .compact();
+
+            Key key = Keys.hmacShaKeyFor(secretKey/*.getBytes(StandardCharsets.UTF_8)*/);
             Claims claims = Jwts.parser()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token)
+                    .parseClaimsJws(jwt)
                     .getBody();
 
             String username = claims.getSubject();
