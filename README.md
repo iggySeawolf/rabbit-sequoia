@@ -3,7 +3,7 @@
 ```markdown
 todo: 
 1) dockerize this multi repo
-2) JSoup for rabbit-sequoia spring
+2) ~~JSoup for rabbit-sequoia spring~~ No need, sequoia's "/api-boards/search-jobs" api returns the needed JSON
 3) Don't let this project die
 4) ???
 5) rabbitmq needed for env
