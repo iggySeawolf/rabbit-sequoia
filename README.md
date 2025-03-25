@@ -1,16 +1,16 @@
 
 
-```markdown
+
 todo: 
 1) dockerize this multi repo
 2) ~~JSoup for rabbit-sequoia spring~~ No need, sequoia's "/api-boards/search-jobs" api returns the needed JSON
 3) Don't let this project die
 4) ???
-5) rabbitmq needed for env
+5) rabbitmq needed for env  
+  
+**🐇🌳 Rabbit Sequoia: Exploring Interoperability with C#, Java, and RabbitMQ**
 
-🐇🌳 Rabbit Sequoia: Exploring Interoperability with C#, Java, and RabbitMQ
-
-
+```markdown
 A personal exploration into the seamless communication between C#, Java, and RabbitMQ.
 
 Rabbit Sequoia is a learning project focused on demonstrating and understanding how applications built with different technologies (C# and Java) can effectively communicate using RabbitMQ as a message broker. It serves as a practical exercise in asynchronous communication and message queues.
