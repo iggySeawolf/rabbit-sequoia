@@ -9,7 +9,7 @@
 # https://github.com/docker/awesome-compose
 
 
-version: '3.8'
+#version: '3.8'
 
 services:
 
@@ -58,6 +58,19 @@ services:
       - "9000:8081"
     networks:
       - app-network
+
+  keycloak:
+    image: keycloak/keycloak
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: ['start-dev', '--http-port=9191']
+    ports:
+      - "8080:9191"
+    networks:
+      - app-network
+
 
 networks:
   app-network:
